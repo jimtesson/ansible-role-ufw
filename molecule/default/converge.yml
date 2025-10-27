@@ -1,0 +1,12 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  tasks:
+    - name: Load vars
+      ansible.builtin.include_vars:
+        file: vars.yml
+
+    - name: "Include jimteson.ufw_setup"
+      ansible.builtin.include_role:
+        name: "jimtesson.ufw_setup"

@@ -1,0 +1,35 @@
+- name: Verify
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Load vars
+      ansible.builtin.include_vars:
+        file: vars.yml
+
+    - name: Ensure ufw is installed
+      ansible.builtin.package:
+        name: ufw
+        state: present
+      register: ufw_package
+
+    - name: Check ufw service status
+      ansible.builtin.systemd:
+        name: ufw
+        state: started
+        enabled: true
+      register: ufw_service
+
+    - name: Verify ufw configuration
+      ansible.builtin.command: ufw status
+      changed_when: false
+      register: ufw_status
+
+    - name: Assert UFW configuration
+      ansible.builtin.assert:
+        that:
+          - ufw_package is not changed
+          - ufw_service is not changed
+          - "'22/tcp' in ufw_status.stdout"
+          - "'80/tcp' in ufw_status.stdout"
+          - "'443/tcp' in ufw_status.stdout"

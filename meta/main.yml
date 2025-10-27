@@ -1,0 +1,17 @@
+galaxy_info:
+  author: jim
+  description: basic setup of ufw
+  role_name: ufw_setup
+  namespace: jimtesson
+  company: none
+  license: MLP2
+  min_ansible_version: "2.11"
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
+  galaxy_tags:
+    - ufw
+    - hardening
+dependencies: []
