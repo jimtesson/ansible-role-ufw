@@ -24,9 +24,10 @@
     proto: "{{ item.proto }}"
   loop: "{{ ufw_rules }}"
   notify: Reload ufw
+  when: ufw_rules is defined
 
 - name: Start ufw service status
   ansible.builtin.systemd:
     name: ufw
-    state: "{{ 'started' if (ufw_enabled | default(true)) else 'stoped' }}"
+    state: "{{ 'started' if (ufw_enabled | default(true)) else 'stopped' }}"
     enabled: "{{ ufw_enabled | default(true) }}"
