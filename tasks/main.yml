@@ -12,10 +12,16 @@
   when: ansible_os_family == 'Debian'
   become: true
 
+- name: Reset ufw
+  community.general.ufw:
+    state: reset
+  become: true
+
 - name: Enable UFW and close all ports
   community.general.ufw:
     state: "{{ 'enabled' if (ufw_enabled | default(true)) else 'disabled' }}"
     policy: deny
+  become: true
 
 - name: Allow specific ports
   community.general.ufw:
@@ -23,7 +29,6 @@
     port: "{{ item.port }}"
     proto: "{{ item.proto }}"
   loop: "{{ ufw_rules }}"
-  notify: Reload ufw
   when: ufw_rules is defined
 
 - name: Start ufw service status
@@ -31,3 +36,8 @@
     name: ufw
     state: "{{ 'started' if (ufw_enabled | default(true)) else 'stopped' }}"
     enabled: "{{ ufw_enabled | default(true) }}"
+
+- name: Reload ufw
+  community.general.ufw:
+    state: reloaded
+  when: ufw_enabled | bool
